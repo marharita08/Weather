@@ -1,7 +1,7 @@
 package com.example.demo.model.entities;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import java.time.LocalDate;
+import java.util.Objects;
 
 @XmlRootElement
 public class Weather {
@@ -74,5 +74,22 @@ public class Weather {
                 ", temp=" + temp +
                 ", description='" + description + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Weather weather = (Weather) o;
+        return Double.compare(weather.temp, temp) == 0
+                && Objects.equals(date, weather.date)
+                && Objects.equals(city, weather.city)
+                && Objects.equals(country, weather.country)
+                && Objects.equals(description, weather.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(date, city, country, temp, description);
     }
 }

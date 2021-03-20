@@ -41,6 +41,8 @@ public class Controller {
 
     private static final Logger LOGGER =
             Logger.getLogger(Controller.class.getName());
+    private static final DateTimeFormatter FORMATTER =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private List<WeatherService> serviceList;
 
     public Controller(List<WeatherService> serviceList) {
@@ -72,8 +74,7 @@ public class Controller {
             LOGGER.info("Request: get weather data for "
                     + city + ", " + country + " for " + date);
             try {
-                specifiedDate = LocalDate.parse(date,
-                        DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                specifiedDate = LocalDate.parse(date, FORMATTER);
             } catch (DateTimeParseException e) {
                 throw new WeatherException("Date has wrong format."
                         + " Input date in format 'yyyy-MM-dd'");
@@ -104,8 +105,7 @@ public class Controller {
             LOGGER.info("Request: download weather data for "
                     + city + ", " + country + " for " + date);
             try {
-                specifiedDate = LocalDate.parse(date,
-                        DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                specifiedDate = LocalDate.parse(date, FORMATTER);
             } catch (DateTimeParseException e) {
                 LOGGER.severe("Date has wrong format");
                 throw new WeatherException("Date has wrong format."

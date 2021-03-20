@@ -2,19 +2,13 @@ package com.example.demo.controller;
 
 import com.example.demo.model.entities.Weather;
 import com.example.demo.model.entities.WeatherException;
+import com.example.demo.model.services.DocumentCreator;
 import com.example.demo.model.services.FinalResponse;
 
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
-import org.apache.xmlbeans.SimpleValue;
-import org.apache.xmlbeans.XmlCursor;
-import org.apache.xmlbeans.XmlObject;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -25,24 +19,16 @@ import java.util.logging.Logger;
 @RequestMapping(path = "/api")
 public class Controller {
 
-    private static final String XMLBASE_CURSOR_SCHEMA_PATH =
-            "declare namespace w="
-            + "'http://schemas.openxmlformats.org/wordprocessingml/2006/main' "
-            + ".//w:fldChar/@w:fldCharType";
-
-    private static final String XMLBASE_OBJECT_SCHEMA_PATH =
-            "declare namespace w="
-            + "'http://schemas.openxmlformats.org/wordprocessingml/2006/main'"
-            + " .//w:ffData/w:name/@w:val";
-
     private static final Logger LOGGER =
             Logger.getLogger(Controller.class.getName());
     private static final DateTimeFormatter FORMATTER =
             DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private FinalResponse finalResponse;
+    private DocumentCreator documentCreator;
 
-    public Controller(FinalResponse finalResponse) {
+    public Controller(FinalResponse finalResponse, DocumentCreator documentCreator) {
         this.finalResponse = finalResponse;
+        this.documentCreator = documentCreator;
     }
 
     /**
@@ -113,26 +99,8 @@ public class Controller {
                 country, specifiedDate);
         LOGGER.info("Writing response to document");
 
-        InputStreamResource result = null;
-        try {
-            FileInputStream stream =
-                    new FileInputStream("src/main/resources/Weather_template.docx");
-            XWPFDocument docx = new XWPFDocument(stream);
-            replaceFormField(docx, "dateInputField", weather.getDate());
-            replaceFormField(docx, "cityInputField", weather.getCity());
-            replaceFormField(docx, "countryInputField", weather.getCountry());
-            replaceFormField(docx, "tempInputField",
-                    String.valueOf(weather.getTemp()));
-            replaceFormField(docx, "descInputField", weather.getDescription());
-            ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
-            docx.write(byteArray);
-            byte[] resource = byteArray.toByteArray();
+        InputStreamResource result = documentCreator.getDocument(weather);
 
-            result = new InputStreamResource(
-                    new ByteArrayInputStream(resource));
-        } catch (IOException e) {
-            LOGGER.warning(e.getMessage());
-        }
         if (result != null) {
             String headerValue = String.format(
                     "attachment;filename=Weather_%s_%s_%s.docx",
@@ -143,39 +111,6 @@ public class Controller {
                     .body(result);
         } else {
             return ResponseEntity.noContent().build();
-        }
-    }
-
-    private void replaceFormField(XWPFDocument document,
-                                  String field, String text) {
-        boolean isFound = false;
-        for (XWPFParagraph paragraph : document.getParagraphs()) {
-            for (XWPFRun run : paragraph.getRuns()) {
-                XmlCursor cursor = run.getCTR().newCursor();
-                cursor.selectPath(XMLBASE_CURSOR_SCHEMA_PATH);
-                while (cursor.hasNextSelection()) {
-                    cursor.toNextSelection();
-                    XmlObject object = cursor.getObject();
-                    if ("begin".equals(((SimpleValue) object)
-                            .getStringValue())) {
-                        cursor.toParent();
-                        object = cursor.getObject();
-                        object = object
-                                .selectPath(XMLBASE_OBJECT_SCHEMA_PATH)[0];
-                        isFound = field.equals(((SimpleValue) object)
-                                .getStringValue());
-                    } else if ("end".equals(((SimpleValue) object)
-                            .getStringValue())) {
-                        if (isFound) {
-                            return;
-                        }
-                        isFound = false;
-                    }
-                }
-                if (isFound && run.getCTR().getTList().size() > 0) {
-                    run.getCTR().getTList().get(0).setStringValue(text);
-                }
-            }
         }
     }
 }

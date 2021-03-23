@@ -17,7 +17,7 @@ public class DocumentCreatorImpl implements DocumentCreator {
 
     private static final Logger LOGGER =
             Logger.getLogger(DocumentCreatorImpl.class.getName());
-    DocumentConverter documentConverter;
+    private DocumentConverter documentConverter;
 
     public DocumentCreatorImpl(DocumentConverter documentConverter) {
         this.documentConverter = documentConverter;

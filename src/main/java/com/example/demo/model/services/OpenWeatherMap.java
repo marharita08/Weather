@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 public class OpenWeatherMap implements WeatherService {
     private static final Logger LOGGER =
             Logger.getLogger(OpenWeatherMap.class.getName());
-    private OpenWeatherMapConverter converter;
+    private final OpenWeatherMapConverter converter;
     @Value("${service.key}")
     private String key;
     @Value("${openmap.host}")
@@ -52,7 +52,7 @@ public class OpenWeatherMap implements WeatherService {
                     java.net.http.HttpRequest.BodyPublishers.noBody(), headers);
             //create request for Weather bit API
             ResponseEntity<String> responseEntity = restTemplate.exchange(
-                    "https://"+host+"/forecast?q="
+                    "https://" + host + "/forecast?q="
                             + city + "," + country,
                     HttpMethod.GET, entity, String.class);
             //convert got response to Weather object

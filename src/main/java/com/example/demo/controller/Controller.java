@@ -23,8 +23,8 @@ public class Controller {
             Logger.getLogger(Controller.class.getName());
     private static final DateTimeFormatter FORMATTER =
             DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private FinalResponse finalResponse;
-    private DocumentCreator documentCreator;
+    private final FinalResponse finalResponse;
+    private final DocumentCreator documentCreator;
 
     public Controller(FinalResponse finalResponse, DocumentCreator documentCreator) {
         this.finalResponse = finalResponse;
@@ -104,7 +104,7 @@ public class Controller {
         if (result != null) {
             String headerValue = String.format(
                     "attachment;filename=Weather_%s_%s_%s.docx",
-                    city, country, specifiedDate.toString());
+                    city, country, specifiedDate);
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)

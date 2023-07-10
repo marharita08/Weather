@@ -52,7 +52,7 @@ public class AerisWeather implements WeatherService {
                 java.net.http.HttpRequest.BodyPublishers.noBody(), headers);
         //create request for Weather bit API
         ResponseEntity<String> responseEntity = restTemplate.exchange(
-                "https://"+host+"/forecasts/"
+                "https://" + host + "/forecasts/"
                         + city + "," + country,
                 HttpMethod.GET, entity, String.class);
         //convert got response to Weather object

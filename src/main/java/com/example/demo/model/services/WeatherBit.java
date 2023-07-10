@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 public class WeatherBit implements WeatherService {
     private static final Logger LOGGER = Logger.getLogger(WeatherBit.class.getName());
 
-    private WeatherBitConverter converter;
+    private final WeatherBitConverter converter;
     @Value("${service.key}")
     private String key;
     @Value("${bit.host}")
@@ -50,7 +50,7 @@ public class WeatherBit implements WeatherService {
                 java.net.http.HttpRequest.BodyPublishers.noBody(), headers);
         //create request for Weather bit API
         ResponseEntity<String> responseEntity = restTemplate.exchange(
-                "https://"+host+"/forecast/daily?city="
+                "https://" + host + "/forecast/daily?city="
                         + city + "&country=" + country,
                 HttpMethod.GET, entity, String.class);
         //convert got response to Weather object

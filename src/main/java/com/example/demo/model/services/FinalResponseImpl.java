@@ -15,7 +15,7 @@ public class FinalResponseImpl implements FinalResponse {
 
     private static final Logger LOGGER =
             Logger.getLogger(FinalResponseImpl.class.getName());
-    private List<WeatherService> serviceList;
+    private final List<WeatherService> serviceList;
 
     public FinalResponseImpl(List<WeatherService> serviceList) {
         this.serviceList = serviceList;
@@ -48,6 +48,7 @@ public class FinalResponseImpl implements FinalResponse {
                 weatherList.add(tmp.get());
             } catch (InterruptedException | ExecutionException e) {
                 //add exception to the exceptionList
+                LOGGER.warning(e.getMessage());
                 exceptionList.add(e);
             }
         }
@@ -61,7 +62,7 @@ public class FinalResponseImpl implements FinalResponse {
             }
             Weather weather = new Weather();
             //using first response from the list
-            //to initialize all params apart of temperature
+            //to initialize all params apart from temperature
             weather.setDate(weatherList.get(0).getDate());
             weather.setCity(weatherList.get(0).getCity());
             weather.setCountry(weatherList.get(0).getCountry());

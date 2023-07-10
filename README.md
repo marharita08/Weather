@@ -2,6 +2,16 @@
 
 The Weather API is a web-based application that provides weather forecasts by retrieving data from three external APIs. It offers an aggregated result based on the available APIs and ensures that the forecast is still provided even if one or more of the external APIs are not functioning. The API returns the forecast in either JSON or XML format.
 
+## Installation
+
+To run the application locally, follow these steps:
+
+1. Clone this repository: `git clone https://github.com/marharita08/Weather`.
+2. Install the required dependencies: `./mvnw install`.
+3. Start the server: `./mvnw spring-boot:run`
+
+## Getting the Forecast
+
 To access the weather forecast, simply open the following URL in your browser: `apiurl:port/api/weather?parameters`. The API supports the following parameters:
 
 - `city` (required): The name of the city for which you want to retrieve the weather forecast.

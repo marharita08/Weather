@@ -2,6 +2,14 @@
 
 The Weather API is a web-based application that provides weather forecasts by retrieving data from three external APIs. It offers an aggregated result based on the available APIs and ensures that the forecast is still provided even if one or more of the external APIs are not functioning. The API returns the forecast in either JSON or XML format.
 
+## Prerequisites
+
+Before using the Weather API, please make sure you have the following:
+
+- [Maven](https://maven.apache.org/) installed to manage the project's dependencies.
+- Access to the internet to retrieve data from the external APIs.
+- A web browser to access the API endpoints and view the forecast results.
+
 ## Installation
 
 To run the application locally, follow these steps:
